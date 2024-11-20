@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Esperando...</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    #messages {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e7e7e7;
+      border-radius: 5px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .message {
+      padding: 8px;
+      margin-bottom: 10px;
+      background-color: #c1f7b8;
+      border-radius: 5px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mensajes de Ably</h1>
+    <div id="messages"></div>
+  </div>
+
+  <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+  <script>
+    // Usamos la clave API de Ably proporcionada
+    const ably = new Ably.Realtime('2YdZmw.awXgCA:IY0HUmwlIMOmzHFmIjB83KeG3kW3ykuM-WJ3_FhyKSQ');  // Reemplazado con tu clave API
+
+    // Canal al que te suscribes para recibir mensajes
+    const channel = ably.channels.get('prl_ecommerce');
+
+    // Función para mostrar los mensajes recibidos en el DOM
+    channel.subscribe((message) => {
+      const messagesDiv = document.getElementById('messages');
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+      messageElement.textContent = `Nuevo mensaje: ${message.data}`;
+      messagesDiv.appendChild(messageElement);
+    });
+
+    console.log('Escuchando en el canal: prl_ecommerce');
+  </script>
+</body>
+</html>
