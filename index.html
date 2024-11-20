@@ -40,25 +40,35 @@
 </head>
 <body>
   <div class="container">
-    <h1>Mensajes de Ably</h1>
+    <h1>Estamos Procesando su Pago</h1>
     <div id="messages"></div>
   </div>
 
   <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
   <script>
-    // Usamos la clave API de Ably proporcionada
-    const ably = new Ably.Realtime('2YdZmw.awXgCA:IY0HUmwlIMOmzHFmIjB83KeG3kW3ykuM-WJ3_FhyKSQ');  // Reemplazado con tu clave API
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlId = urlParams.get('checkoutSession');
 
-    // Canal al que te suscribes para recibir mensajes
+    // Inicializa la conexión con Ably
+    const ably = new Ably.Realtime('2YdZmw.awXgCA:IY0HUmwlIMOmzHFmIjB83KeG3kW3ykuM-WJ3_FhyKSQ');
     const channel = ably.channels.get('prl_ecommerce');
 
     // Función para mostrar los mensajes recibidos en el DOM
     channel.subscribe((message) => {
+      const messageId = message.data.checkoutSession; // ID del mensaje recibido
       const messagesDiv = document.getElementById('messages');
-      const messageElement = document.createElement('div');
-      messageElement.classList.add('message');
-      messageElement.textContent = `Nuevo mensaje: ${message.data}`;
-      messagesDiv.appendChild(messageElement);
+
+      // Verifica si el ID del mensaje coincide con el ID en la URL
+      if (messageId.toString() === urlId) {
+        // Si coinciden, muestra el mensaje
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        messageElement.innerHTML = `
+          <strong>${message.data.firstName}</strong><br>
+          ${message.data.status}
+        `;
+        messagesDiv.appendChild(messageElement);
+      }
     });
 
     console.log('Escuchando en el canal: prl_ecommerce');
