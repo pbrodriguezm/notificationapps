@@ -55,7 +55,7 @@
 
     // Función para mostrar los mensajes recibidos en el DOM
     channel.subscribe((message) => {
-      const messageId = message.data.checkoutSession; // ID del mensaje recibido
+      const messageId = message.data.checkoutSession;
       const messagesDiv = document.getElementById('messages');
 
       // Verifica si el ID del mensaje coincide con el ID en la URL
@@ -64,8 +64,9 @@
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         messageElement.innerHTML = `
-          <strong>${message.data.firstName}</strong><br>
-          ${message.data.status}
+          <strong>Estimado/a ${message.data.customerPayer.firstName}</strong><br>
+          El resultado de proceso fue ${message.data.status ? "SUCCEEDED": "FALLÓ"} <br>
+          ${message.data.amount.value} ${message.data.amount.currency}
         `;
         messagesDiv.appendChild(messageElement);
       }
