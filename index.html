@@ -232,12 +232,12 @@
           // Verifica el valor de status y muestra el contenido correspondiente
           if (message.data.status === "SUCCEEDED") {
             const successMessage = document.createElement('div');
-            successMessage.classList.add('plantillarepuesta');
+            successMessage.id('plantillarepuesta');
             successMessage.innerHTML = getSuccessMessageTemplate(message); // Utiliza la función para obtener el mensaje
             messagesDiv.appendChild(successMessage);
           } else if (message.data.status === "DENIED") {
             const deniedMessage = document.createElement('div');
-            deniedMessage.classList.add('plantillarepuesta');
+            deniedMessage.id('plantillarepuesta');
             deniedMessage.innerHTML = getDeniedMessageTemplate(message); // Utiliza la función para obtener el mensaje
             messagesDiv.appendChild(deniedMessage);
           }
