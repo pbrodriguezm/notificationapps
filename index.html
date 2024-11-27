@@ -94,6 +94,30 @@
           ${message.data.amount.value} ${message.data.amount.currency}
         `;
         messagesDiv.appendChild(messageElement);
+
+        setTimeout(() => {
+          messagesDiv.innerHTML = ''; // Limpia el contenido anterior
+
+          // Verifica el valor de status y muestra el contenido correspondiente
+          if (message.data.status === "SUCCEEDED") {
+            const successMessage = document.createElement('div');
+            successMessage.classList.add('message');
+            successMessage.innerHTML = `
+              <div>Su reserva es esta: ${message.data.booking}</div>
+            `;
+            messagesDiv.appendChild(successMessage);
+          } else if (message.data.status === "DENIED") {
+            const deniedMessage = document.createElement('div');
+            deniedMessage.classList.add('message');
+            deniedMessage.innerHTML = `
+              <div>Su reserva ${message.data.booking} no se realizó correctamente</div>
+            `;
+            messagesDiv.appendChild(deniedMessage);
+          }
+        }, 5000); // 5 segundos de espera (5000 milisegundos)
+
+
+        
       }
     });
 
