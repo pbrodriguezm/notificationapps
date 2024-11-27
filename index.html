@@ -70,13 +70,14 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const urlId = urlParams.get('checkoutSession');
-    console.log('urlId'+ urlId);
+    console.log('urlId: '+ urlId);
     // Inicializa la conexión con Ably
     const ably = new Ably.Realtime('2YdZmw.awXgCA:IY0HUmwlIMOmzHFmIjB83KeG3kW3ykuM-WJ3_FhyKSQ');
     const channel = ably.channels.get('prl_ecommerce');
 
     // Función para mostrar los mensajes recibidos en el DOM
     channel.subscribe((message) => {
+      console.log('Cuerpo del message:');
       console.log(message);
       const messageId = message.data.checkoutSession;
       const messagesDiv = document.getElementById('messages');
