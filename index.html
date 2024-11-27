@@ -161,7 +161,7 @@
   </style>
 </head>
 <body>
-  <div class="plantillaconfirmacion">
+  <div class="plantillarepuesta">
     <div class="container">
       <h1>Estamos Procesando su Pago</h1>
       <div id="messages">
@@ -210,6 +210,7 @@
       console.log(message);
       const messageId = message.data.checkoutSession;
       const messagesDiv = document.getElementById('messages');
+      const plantillarepuestaDiv = document.getElementById('plantillarepuesta');
 
       // Verifica si el ID del mensaje coincide con el ID en la URL
       if (messageId.toString() === urlId) {
@@ -226,16 +227,17 @@
 
         setTimeout(() => {
           messagesDiv.innerHTML = ''; // Limpia el contenido anterior
+          plantillarepuestaDiv.innerHTML = ''; // Limpia el contenido anterior
 
           // Verifica el valor de status y muestra el contenido correspondiente
           if (message.data.status === "SUCCEEDED") {
             const successMessage = document.createElement('div');
-            successMessage.classList.add('plantillaconfirmacion');
+            successMessage.classList.add('plantillarepuesta');
             successMessage.innerHTML = getSuccessMessageTemplate(message); // Utiliza la función para obtener el mensaje
             messagesDiv.appendChild(successMessage);
           } else if (message.data.status === "DENIED") {
             const deniedMessage = document.createElement('div');
-            deniedMessage.classList.add('plantillaconfirmacion');
+            deniedMessage.classList.add('plantillarepuesta');
             deniedMessage.innerHTML = getDeniedMessageTemplate(message); // Utiliza la función para obtener el mensaje
             messagesDiv.appendChild(deniedMessage);
           }
