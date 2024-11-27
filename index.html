@@ -59,21 +59,31 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Estamos Procesando su Pago</h1>
-    <div id="messages">
-      <div class="loading"></div>
+  <div class="plantillaconfirmacion">
+    <div class="container">
+      <h1>Estamos Procesando su Pago</h1>
+      <div id="messages">
+        <div class="loading"></div>
+      </div>
     </div>
   </div>
-
   <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const urlId = urlParams.get('checkoutSession');
-    console.log('urlId: '+ urlId);
+    console.log('urlId: ' + urlId);
+
     // Inicializa la conexión con Ably
     const ably = new Ably.Realtime('2YdZmw.awXgCA:IY0HUmwlIMOmzHFmIjB83KeG3kW3ykuM-WJ3_FhyKSQ');
     const channel = ably.channels.get('prl_ecommerce');
+
+    // Definición de las plantillas de mensaje
+    const successMessageTemplate = `
+      <div>Su reserva es esta: ${message.data.booking}</div>
+    `;
+    const deniedMessageTemplate = `
+      <div>Su reserva ${message.data.booking} no se realizó correctamente</div>
+    `;
 
     // Función para mostrar los mensajes recibidos en el DOM
     channel.subscribe((message) => {
@@ -84,7 +94,7 @@
 
       // Verifica si el ID del mensaje coincide con el ID en la URL
       if (messageId.toString() === urlId) {
-        // Si coinciden, reemplaza el indicador de carga con el mensaje
+        // Si coinciden, reemplaza el indicador de carga con el mensaje después de 10 segundos
         messagesDiv.innerHTML = ''; // Limpia el contenido anterior
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
@@ -93,7 +103,8 @@
           El resultado del proceso fue ${message.data.status ? "SUCCEEDED" : "FALLÓ"} <br>
           ${message.data.amount.value} ${message.data.amount.currency}
         `;
-        messagesDiv.appendChild(messageElement);
+        messagesDiv.appendChild(messageElement);        
+
 
         setTimeout(() => {
           messagesDiv.innerHTML = ''; // Limpia el contenido anterior
@@ -102,24 +113,21 @@
           if (message.data.status === "SUCCEEDED") {
             const successMessage = document.createElement('div');
             successMessage.classList.add('message');
-            successMessage.innerHTML = `
-              <div>Su reserva es esta: ${message.data.booking}</div>
-            `;
+            successMessage.innerHTML = successMessageTemplate; // Utiliza la plantilla de éxito
             messagesDiv.appendChild(successMessage);
           } else if (message.data.status === "DENIED") {
             const deniedMessage = document.createElement('div');
             deniedMessage.classList.add('message');
-            deniedMessage.innerHTML = `
-              <div>Su reserva ${message.data.booking} no se realizó correctamente</div>
-            `;
+            deniedMessage.innerHTML = deniedMessageTemplate; // Utiliza la plantilla de error
             messagesDiv.appendChild(deniedMessage);
           }
-          channel.unsubscribe();
           
-        }, 5000); // 5 segundos de espera (5000 milisegundos)
+          // Detener la escucha del canal después de procesar el mensaje
+          channel.unsubscribe();
+        }, 2000); // 2 segundos de espera (20000 milisegundos)
 
 
-        
+
       }
     });
 
