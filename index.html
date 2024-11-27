@@ -161,7 +161,7 @@
   </style>
 </head>
 <body>
-  <div id="plantillarepuesta">
+  <div class="plantillarepuesta">
     <div class="container">
       <h1>Estamos Procesando su Pago</h1>
       <div id="messages">
@@ -210,7 +210,7 @@
       console.log(message);
       const messageId = message.data.checkoutSession;
       const messagesDiv = document.getElementById('messages');
-      const plantillarepuestaDiv = document.getElementById('plantillarepuesta');
+      const plantillarepuestaDiv = document.getElementsByClassName('plantillarepuesta');
 
       // Verifica si el ID del mensaje coincide con el ID en la URL
       if (messageId.toString() === urlId) {
@@ -232,12 +232,12 @@
           // Verifica el valor de status y muestra el contenido correspondiente
           if (message.data.status === "SUCCEEDED") {
             const successMessage = document.createElement('div');
-            successMessage.id('plantillarepuesta');
+            successMessage.classList.add('plantillarepuesta');
             successMessage.innerHTML = getSuccessMessageTemplate(message); // Utiliza la función para obtener el mensaje
             messagesDiv.appendChild(successMessage);
           } else if (message.data.status === "DENIED") {
             const deniedMessage = document.createElement('div');
-            deniedMessage.id('plantillarepuesta');
+            deniedMessage.classList.add('plantillarepuesta');
             deniedMessage.innerHTML = getDeniedMessageTemplate(message); // Utiliza la función para obtener el mensaje
             messagesDiv.appendChild(deniedMessage);
           }
@@ -253,4 +253,4 @@
     console.log('Escuchando en el canal: prl_ecommerce');
   </script>
 </body>
-</html> 
+</html>
