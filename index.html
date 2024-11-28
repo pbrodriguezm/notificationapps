@@ -43,19 +43,124 @@
       display: inline-block;
       width: 48px;
       height: 48px;
-      border: 4px solid #f3f3f3;
+      border: 4px solid #f3f3f3; /* Color del borde externo */
       border-radius: 50%;
-      border-top: 4px solid #3498db;
+      border-top: 4px solid #3498db; /* Color del borde animado */
       animation: spin 1s linear infinite;
     }
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Header con logo a la izquierda */
+    header {
+        background-color: #F3F3F3;
+        color: #F3F3F3;
+        padding: 20px;
+        display: flex;
+        align-items: center; /* Alinea el logo verticalmente */
+        justify-content: flex-start; /* Alinea el logo a la izquierda */
+        width: 100%;
+        max-width: 1000px; /* El header también tendrá un ancho máximo de 1000px */
+        margin: 0 auto; /* Centra el header dentro de la página */
+    }
+
+    header img {
+        max-width: 150px; /* Limita el tamaño del logo */
+        height: auto;
+    }
+
+    /* Sección principal */
+    .main-content {
+        background-color: white;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #e7ecf1;
+        box-sizing: border-box; /* Asegura que el padding se cuente en el ancho */
+        width: 100%; /* Por defecto ocupa el 100% */
+        max-width: 1000px; /* Ancho máximo de 1000px */
+    }
+
+    /* Estilos para la imagen y párrafo */
+    .main-content img {
+        display: block;
+        margin: 0 auto;
+        
+        max-width: 600px;  /* Limitar tamaño máximo de la imagen */
+        height: auto;
+    }
+
+    .main-content p {
+        text-align: left;
+        font-size: 14px;
+        color: #333;
+        margin-top: 20px;
+        font-family: "Roboto", sans-serif;
+        line-height: 1.42857143;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    /* Media Queries para distintos tamaños de pantalla */
+    @media (min-width: 768px) {
+        .main-content {
+            width: 750px; /* Ancho para pantallas medianas */
+        }
+        header {
+            max-width: 750px; /* El header se ajusta al mismo ancho del main-content */
+        }
+        header img {
+            max-width: 750px; /* El logo también se ajusta al 100% del contenedor */
+        }
+    }
+
+    @media (min-width: 992px) {
+        .main-content {
+            width: 970px; /* Ancho para pantallas grandes */
+        }
+        header {
+            max-width: 970px; /* El header se ajusta al mismo ancho del main-content */
+        }
+        header img {
+            max-width: 970px; /* El logo se ajusta al tamaño del contenedor */
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .main-content {
+            width: 970px; /* Ancho fijo para pantallas muy grandes */
+        }
+        header {
+            max-width: 970px; /* El header se ajusta al mismo ancho del main-content */
+        }
+        header img {
+            max-width: 970px; /* El logo se ajusta al tamaño del contenedor */
+        }
+    }
+
+    /* Media Query para tabletas grandes y pantallas de escritorio pequeñas */
+    @media (min-width: 1024px) and (max-width: 1280px) {
+        .main-content {
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        .main-content img {
+            max-width: 80%;
+        }
+
+        .main-content p {
+            font-size: 1.3em;
+        }
     }
   </style>
 </head>
 <body>
-    <div class="plantillarepuesta"></div>
     <div class="container">
       <h1>Estamos Procesando su Pago</h1>
       <div id="messages">
@@ -69,21 +174,24 @@
     const urlId = urlParams.get('checkoutSession');
     console.log('urlId: ' + urlId);
 
+    // Inicializa la conexión con Ably
     const ably = new Ably.Realtime('2YdZmw.awXgCA:IY0HUmwlIMOmzHFmIjB83KeG3kW3ykuM-WJ3_FhyKSQ');
     const channel = ably.channels.get('prl_ecommerce');
 
+    // Definición de las plantillas de mensaje como funciones que aceptan el mensaje como parámetro
     function getSuccessMessageTemplate(message) {
       return `
         <header>
             <img src="https://book.perurail.com/Images/logo-white.png" alt="Logo">
         </header>
+
         <div class="main-content">
             <img src="https://ecomtsstaging.perurail.com/Images/FileServer/Tren/2_cms_t_i_nb_av_logoplantilla.png" alt="Perurail">
             <p></p>
             <img src="https://ecomtsbeta.perurail.com/Images/FileServer/Tren/2_cms_t_i_nb_av_bannerplantilla.png" alt="Perurail">
             <p>
                 <b>Pago Exitoso</b><br>
-                ¡Felicidades! Su reserva <b>${message.data.booking}</b> con Nro de transacción ${message.data.idTransaction} por el monto de <b>${message.data.amount.currency} ${message.data.amount.value}</b> y fecha de inicio de viaje <b>xx/xx/xxxx 00:00:00</b> ha sido registrada.
+                ¡Felicidades! Su reserva <b>${message.data.booking}</b> con Nro de transacción ${message.data.idTransaction} por el monto de <b>${message.data.amount.currency} ${message.data.amount.value}</b> y fecha de inicio de viaje <b>xx/xx/xxxx 00:00:00</b> ha sido registrada. En breves minutos estará recibiendo la confirmación al correo electrónico indicado al momento de su compra. Si no lo encuentra en su bandeja de entrada, le recomendamos revisar la carpeta de spam con la dirección ventasonline2@perurail.com
             </p>
         </div>
       `;
@@ -95,15 +203,17 @@
       `;
     }
 
+    // Función para mostrar los mensajes recibidos en el DOM
     channel.subscribe((message) => {
-      console.log('Cuerpo del message:', message);
+      console.log('Cuerpo del message:');
+      console.log(message);
       const messageId = message.data.checkoutSession;
       const messagesDiv = document.getElementById('messages');
-      const plantillarepuestaDiv = document.getElementsByClassName('plantillarepuesta')[0]; // Accedemos al primer (y único) div con esta clase
 
+      // Verifica si el ID del mensaje coincide con el ID en la URL
       if (messageId.toString() === urlId) {
-        // Limpiar contenido de #messages y añadir el mensaje base
-        messagesDiv.innerHTML = '';
+        // Si coinciden, reemplaza el indicador de carga con el mensaje después de 10 segundos
+        messagesDiv.innerHTML = ''; // Limpia el contenido anterior
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         messageElement.innerHTML = `
@@ -114,18 +224,21 @@
         messagesDiv.appendChild(messageElement);        
 
         setTimeout(() => {
-          plantillarepuestaDiv.innerHTML = ''; // Limpiar contenido de plantillarepuesta
+          // Limpiamos el contenido del body para colocar el nuevo mensaje
+          document.body.innerHTML = '';
 
-          // Mostrar el mensaje adecuado según el estado
+          // Verifica el valor de status y muestra el contenido correspondiente
           if (message.data.status === "SUCCEEDED") {
-            plantillarepuestaDiv.innerHTML = getSuccessMessageTemplate(message);
+            document.body.innerHTML = getSuccessMessageTemplate(message);
           } else if (message.data.status === "DENIED") {
-            plantillarepuestaDiv.innerHTML = getDeniedMessageTemplate(message);
+            document.body.innerHTML = getDeniedMessageTemplate(message);
           }
-
+          
           // Detener la escucha del canal después de procesar el mensaje
           channel.unsubscribe();
-        }, 1000); // 1 segundo de espera antes de mostrar la plantilla
+        }, 1000); // 1 segundos de espera (1000 milisegundos)
+
+
       }
     });
 
