@@ -228,10 +228,10 @@
           document.body.innerHTML = '';
 
           // Verifica el valor de status y muestra el contenido correspondiente
-          if (message.data.isApproved === "true") {
+          if (message.data.isApproved === true) {
             document.body.innerHTML = getSuccessMessageTemplate(message);
             document.title = "Confirmación Perurail - Ecommerce";
-          } else if (message.data.isApproved === "false") {
+          } else if (message.data.isApproved === false) {
             document.body.innerHTML = getDeniedMessageTemplate(message);
             document.title = "Perurail - Ecommerce";
           }
