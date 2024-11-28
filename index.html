@@ -228,10 +228,12 @@
           document.body.innerHTML = '';
 
           // Verifica el valor de status y muestra el contenido correspondiente
-          if (message.data.status === "SUCCEEDED") {
+          if (message.data.isApproved === "true") {
             document.body.innerHTML = getSuccessMessageTemplate(message);
-          } else if (message.data.status === "DENIED") {
+            document.title = "Confirmación Perurail - Ecommerce";
+          } else if (message.data.isApproved === "false") {
             document.body.innerHTML = getDeniedMessageTemplate(message);
+            document.title = "Perurail - Ecommerce";
           }
           
           // Detener la escucha del canal después de procesar el mensaje
