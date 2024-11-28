@@ -161,14 +161,14 @@
   </style>
 </head>
 <body>
-  <div class="plantillarepuesta">
+    <div class="plantillarepuesta"></div>
     <div class="container">
       <h1>Estamos Procesando su Pago</h1>
       <div id="messages">
         <div class="loading"></div>
       </div>
     </div>
-  </div>
+  
   <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -210,6 +210,7 @@
       console.log(message);
       const messageId = message.data.checkoutSession;
       const messagesDiv = document.getElementById('messages');
+      const containerDiv = document.getElementsByClassName('container');
       const plantillarepuestaDiv = document.getElementsByClassName('plantillarepuesta');
 
       // Verifica si el ID del mensaje coincide con el ID en la URL
@@ -226,8 +227,8 @@
         messagesDiv.appendChild(messageElement);        
 
         setTimeout(() => {
-          messagesDiv.innerHTML = ''; // Limpia el contenido anterior
           plantillarepuestaDiv.innerHTML = ''; // Limpia el contenido anterior
+          containerDiv.innerHTML = ''; // Limpia el contenido anterior
 
           // Verifica el valor de status y muestra el contenido correspondiente
           if (message.data.status === "SUCCEEDED") {
@@ -253,4 +254,4 @@
     console.log('Escuchando en el canal: prl_ecommerce');
   </script>
 </body>
-</html>
+</html> 
